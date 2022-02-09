@@ -1,0 +1,12 @@
+name: mlflow-example
+
+# conda_env: conda.yml
+docker_env:
+    image: mlflow-example-docker
+
+entry_points:
+    main:
+        parameters:
+            alpha: float
+            l1_ratio: {type: float, default: 0.1}    
+        command: "python train.py --alpha {alpha} --l1_ratio {l1_ratio}}
