@@ -1,9 +1,13 @@
 channels:
 - defaults
 dependencies:
-- python=3.9.9
-- scikit-learn=0.20.3
+- python=3.9
+- scikit-learn=0.24.2
 - pip:
   - mlflow
-  - cloudpickle==0.8.0
+  - cloudpickle
+  - pandas
+  - numpy
+  - scipy
+  - conda
 name: mlflow-env

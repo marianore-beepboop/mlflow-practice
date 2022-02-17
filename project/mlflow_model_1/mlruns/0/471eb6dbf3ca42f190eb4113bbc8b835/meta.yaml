@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/Mariano/Desktop/mlflow-practice/mlflow-practice-github/project/mlflow_model_1/mlruns/0/471eb6dbf3ca42f190eb4113bbc8b835/artifacts
+end_time: 1645121503217
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: 471eb6dbf3ca42f190eb4113bbc8b835
+run_uuid: 471eb6dbf3ca42f190eb4113bbc8b835
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1645121497424
+status: 4
+tags: []
+user_id: Mariano

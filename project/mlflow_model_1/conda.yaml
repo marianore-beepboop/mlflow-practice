@@ -1,0 +1,15 @@
+name: mlflow_model_1
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.7
+  - pip
+  - pip:
+    - scikit-learn
+    - sklearn
+    - mlflow
+    - pandas
+    - numpy
+    - xgboost

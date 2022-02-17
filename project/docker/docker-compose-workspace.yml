@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+    mlflow-workspace:
+        build: ./mlflow_container/
+        ports:
+            - 0.0.0.0:22:22
+        restart: always
+        volumes:
+            - type: bind
+              source: ../mlflow_model_1/
+              target: /home/dockeruser
+        entrypoint: ./mlflow_container/entrypoints/start_mlflow.sh
