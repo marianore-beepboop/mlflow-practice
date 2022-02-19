@@ -1,13 +1,46 @@
 version: "3"
 
 services:
+    postgresql:
+        image: postgres:13
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+            POSTGRES_DB: mlflow-db
+            POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+        restart: always
+        volumes:
+            - mlflow-db:/var/lib/postgresql/data
+        ports:
+            - 0.0.0.0:5432:5432
+
+    waitfordb:
+        image: dadarek/wait-for-dependencies
+        depends_on:
+            - postgresql
+        command: postgresql:5432
+
     mlflow-workspace:
         build: ./mlflow_container/
         ports:
             - 0.0.0.0:22:22
+            - 0.0.0.0:5000:5000
+            - 0.0.0.0:80:80
         restart: always
         volumes:
+            - "${MLFLOW_ARTIFACT_ROOT}:${MLFLOW_ARTIFACT_ROOT}"
             - type: bind
               source: ../mlflow_model_1/
               target: /home/dockeruser
-        entrypoint: ./mlflow_container/entrypoints/start_mlflow.sh
+        entrypoint: bash -c "/usr/sbin/sshd && /entrypoints/start_mlflow.sh"
+        environment:
+            DB_URI: postgresql+psycopg2://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgresql:5432/mlflow-db
+            MLFLOW_ARTIFACT_ROOT: "${MLFLOW_ARTIFACT_ROOT}"
+            MLFLOW_TRACKING_USERNAME: "${MLFLOW_TRACKING_USERNAME}"
+            MLFLOW_TRACKING_PASSWORD: "${MLFLOW_TRACKING_PASSWORD}"
+        depends_on:
+            - waitfordb
+
+volumes:
+    mlflow-db:
+        driver: local       

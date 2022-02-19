@@ -1,16 +1,31 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:latest
 
-# Create the environment using conda
-RUN conda install -c anaconda jupyter>=1.0.0
-RUN conda install -c conda-forge mlflow>=1.8.0
-RUN conda install -c anaconda scikit-learn>=0.22.1
-RUN conda install -c anaconda psycopg2>=2.8.5
-RUN conda install -c anaconda boto3>=1.14.12
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+RUN echo "export LC_ALL=$LC_ALL" >> /etc/profile.d/locale.sh
+RUN echo "export LANG=$LANG" >> /etc/profile.d/locale.sh
+ENV GUNICORN_CMD_ARGS="--timeout 500"
+
+# Copy files
+COPY ./entrypoints/start_mlflow.sh ./entrypoints/start_mlflow.sh
+RUN chmod +x ./entrypoints/start_mlflow.sh
 
 # Set up SSH
 RUN apt-get update && apt-get install -y openssh-server
 RUN useradd -m -s /bin/bash dockeruser
 RUN mkdir /var/run/sshd
 RUN echo 'dockeruser:123' | chpasswd
-# EXPOSE 22
-CMD ["/usr/sbin/sshd", "-D"]
+
+# Install system-wide packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libpq-dev
+
+# Install needed packages
+RUN pip install -U pip && \
+    pip install boto3 psycopg2 mlflow>=1.9.1 && \
+    pip install gunicorn>=19.9.0 \
+    pip install jupyter \
+    pip install scikit-learn
