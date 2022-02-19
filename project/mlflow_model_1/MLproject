@@ -2,10 +2,10 @@
 
 name: mlflow_model_1
 
-# conda_env: conda.yaml
+conda_env: conda.yaml
 
-docker_env:
-    image: mlflow_model_1_docker
+# docker_env:
+#     image: mlflow_model_1_docker
 
 entry_points:
     main:
