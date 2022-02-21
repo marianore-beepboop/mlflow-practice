@@ -1,3 +1,4 @@
+import datetime
 import mlflow
 import pandas as pd
 from sklearn.metrics import mean_squared_error
@@ -11,10 +12,17 @@ mlflow_settings = dict(
     port=5000,
 )
 
+current_date = datetime.date.today()
+
 mlflow.set_tracking_uri(
     "http://{username}:{password}@{host}:{port}".format(**mlflow_settings)
 )
 
+if mlflow.get_experiment_by_name("Test Experiment") is not None:
+    experiment_id = mlflow.set_experiment("Test Experiment")
+else:
+    mlflow.create_experiment("Test Experiment")
+    experiment_id = mlflow.set_experiment("Test Experiment")
 
 def prepare_data(df):
     df["ds"] = pd.to_datetime(df["ds"])
@@ -29,7 +37,7 @@ def prepare_data(df):
 
 
 def run_experiment():
-    with mlflow.start_run():
+    with mlflow.start_run(run_name=f"test_run_{current_date}"):
         # Load and prepare training and validation data
         df = pd.read_csv(
             'https://raw.githubusercontent.com/facebook/prophet/master/examples/example_retail_sales.csv',

@@ -17,6 +17,11 @@ RUN useradd -m -s /bin/bash dockeruser
 RUN mkdir /var/run/sshd
 RUN echo 'dockeruser:123' | chpasswd
 
+# Set up permissions
+RUN chown dockeruser:dockeruser /opt/conda/
+RUN mkdir -p /home/dockeruser/mlruns /home/dockeruser/mlruns/.trash
+RUN chown 777 -R /home/dockeruser/mlruns/
+
 # Install system-wide packages
 RUN apt-get update && apt-get install -y \
     build-essential \
